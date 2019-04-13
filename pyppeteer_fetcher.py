@@ -30,7 +30,7 @@ async def run_browser():
     #browser_settings['executablePath'] = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
     browser_settings['executablePath'] = '/usr/bin/google-chrome-stable'
     browser_settings["headless"] = True
-    browser_settings['devtools'] = True
+    browser_settings['devtools'] = False
     browser_settings['autoClose'] = False
     browser_settings['ignoreHTTPSErrors'] = True
     # 在浏览器级别设置本地代理

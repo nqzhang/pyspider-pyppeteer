@@ -7,5 +7,7 @@ WORKDIR /opt
 RUN git clone https://github.com/nqzhang/pyspider-pyppeteer
 WORKDIR /opt/pyspider-pyppeteer
 RUN pip3.6 install -r requirements.txt
+RUN rm -f /etc/machine-id &&  dbus-uuidgen --ensure=/etc/machine-id
 EXPOSE 22224
+VOLUME ["/opt/pyspider-pyppeteer"]
 CMD ["python3.6", "pyppeteer_fetcher.py"]

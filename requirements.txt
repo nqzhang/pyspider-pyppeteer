@@ -1,3 +1,4 @@
 tornado>5.0
 pyppeteer
 websockets<7.0
+uvloop

@@ -15,6 +15,9 @@ try:
     AsyncIOMainLoop().install()
 except:
     pass
+import logging
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S',level=logging.INFO)
+import config
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -27,14 +30,18 @@ class Application(tornado.web.Application):
 
 async def run_browser():
     browser_settings = {}
+
     #browser_settings['executablePath'] = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
-    browser_settings['executablePath'] = '/usr/bin/google-chrome-stable'
-    browser_settings["headless"] = True
+    browser_settings["headless"] = False
     browser_settings['devtools'] = False
     browser_settings['autoClose'] = False
     browser_settings['ignoreHTTPSErrors'] = True
     # 在浏览器级别设置本地代理
     browser_settings["args"] = ['--no-sandbox', "--disable-setuid-sandbox","--proxy-server=http://127.0.0.1:8888"];
+    if config.env == "production":
+        browser_settings['executablePath'] = '/usr/bin/google-chrome-stable'
+        browser_settings["headless"] = True
+
     browser =  await launch(browser_settings)
     return browser
 
@@ -93,8 +100,7 @@ class PostHandler(tornado.web.RequestHandler):
             await page.setRequestInterception(True)
             page.on('request',lambda req:asyncio.ensure_future(request_check(req)))
             response = await page.goto(fetch['url'], page_settings)
-            print('goto ',fetch['url'])
-
+            #print(fetch['url'])
             result['content'] = await page.content()
             result['url'] = page.url
             result['status_code'] = response.status
@@ -102,6 +108,8 @@ class PostHandler(tornado.web.RequestHandler):
             result['headers'] = response.headers
             end_time = datetime.datetime.now()
             result['time'] = (end_time - start_time).total_seconds()
+            logging.info('goto {},use time {}'.format(fetch['url'],result['time']))
+
         except Exception as e:
             result['error'] = str(e)
             result['status_code'] = 599

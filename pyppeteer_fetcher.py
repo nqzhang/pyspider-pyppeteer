@@ -28,6 +28,7 @@ class Application(tornado.web.Application):
 async def run_browser():
     browser_settings = {}
     #browser_settings['executablePath'] = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
+    browser_settings['executablePath'] = '/usr/bin/google-chrome-stable'
     browser_settings["headless"] = True
     browser_settings['devtools'] = True
     browser_settings['autoClose'] = False
@@ -179,6 +180,7 @@ def run():
     app = Application()
     app.init_browser(loop)
     app.listen(22224)
+    print('pyppeteer running on port {}'.format(22224))
     loop.run_forever()
 
 if __name__ == '__main__':
